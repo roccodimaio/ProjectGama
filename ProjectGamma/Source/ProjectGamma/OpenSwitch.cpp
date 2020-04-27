@@ -38,9 +38,9 @@ AOpenSwitch::AOpenSwitch()
 
 	DoorMesh02 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh02"));
 	DoorMesh02->SetupAttachment(GetRootComponent());
-	
 
-
+	bIsDoorMesh02Set = false; 
+	bIsFloorSwitchMeshSet = false; 
 }
 
 // Called when the game starts or when spawned
@@ -50,6 +50,10 @@ void AOpenSwitch::BeginPlay()
 
 	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &AOpenSwitch::OnOverlapBegin);
 	TriggerBox->OnComponentEndOverlap.AddDynamic(this, &AOpenSwitch::OnOverlapEnd);
+
+	InitialDoor01Location = DoorMesh01->GetComponentLocation();
+	InitialDoor02Location = DoorMesh02->GetComponentLocation();
+	InitialSwitchLocation = FloorSwitch->GetComponentLocation(); 
 	
 }
 
@@ -63,11 +67,35 @@ void AOpenSwitch::Tick(float DeltaTime)
 void AOpenSwitch::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Overlap Begin."));
+	OpenDoor();
+	LowerFloorSwitch();
 }
 
 void AOpenSwitch::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Overlap End."));
+	CloseDoor(); 
+	RaiseFloorSwitch();
 }
 
+void AOpenSwitch::UpdateDoor01Location(FVector DoorDirection)
+{
+	FVector NewDoor01Location = InitialDoor01Location;
+	NewDoor01Location += DoorDirection;
+	DoorMesh01->SetWorldLocation(NewDoor01Location); 
 
+	if (bIsDoorMesh02Set)
+	{
+		FVector NewDoor02Location = InitialDoor02Location;
+		NewDoor02Location -= DoorDirection;
+		DoorMesh02->SetWorldLocation(NewDoor02Location);
+	}
+}
+
+void AOpenSwitch::UpdateFloorSwitchLocation(float Value)
+{
+	FVector NewFloorSwitchLocation = InitialSwitchLocation;
+	NewFloorSwitchLocation.Z += Value;
+	FloorSwitch->SetWorldLocation(NewFloorSwitchLocation);
+	
+}
