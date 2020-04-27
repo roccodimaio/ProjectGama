@@ -16,26 +16,38 @@ public:
 	AOpenSwitch();
 
 	/** Overlap volume for functionality to be triggered */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "OpenSwitch")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "_OpenSwitch")
 	class UBoxComponent* TriggerBox;
 
 	/** Floor switch for character to step one */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "OpenSwitch")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "_OpenSwitch")
 	class UStaticMeshComponent* FloorSwitch;
 
 	/** Door to move when triggered */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "OpenSwitch")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "_OpenSwitch")
 	UStaticMeshComponent* DoorMesh01;
 
 	/** Door to move when triggered */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "OpenSwitch")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "_OpenSwitch")
 	UStaticMeshComponent* DoorMesh02; 
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "OpenSwitch")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "_OpenSwitch | Particles")
+	class UParticleSystemComponent* ParticleSystem01;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "_OpenSwitch | Particles")
+	class UParticleSystemComponent* ParticleSystem02;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "_OpenSwitch")
 	bool bIsDoorMesh02Set;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "OpenSwitch")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "_OpenSwitch")
 	bool bIsFloorSwitchMeshSet;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "_OpenSwitch")
+	bool bAreParticlesSet;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "_OpenSwitch")
+	bool bDoorUnlocked;
 
 	/** Initial location for the Door01Mesh */
 	UPROPERTY(BlueprintReadWrite, Category = "OpenSwitch")
@@ -48,6 +60,12 @@ public:
 	/** Initial location for the FloorSwitch Mesh */
 	UPROPERTY(BlueprintReadWrite, Category = "OpenSwitch")
 	FVector InitialSwitchLocation;
+
+	UPROPERTY(BlueprintReadWrite, Category = "OpenSwitch | Particles")
+	FVector InitialParticlSystem01Location; 
+
+	UPROPERTY(BlueprintReadWrite, Category = "OpenSwitch | Particles")
+	FVector InitialParticlSystem02Location;
 
 protected:
 	// Called when the game starts or when spawned
@@ -64,7 +82,7 @@ public:
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "OpenSwitch")
-	void OpenDoor(); 
+	void OpenDoor(AActor* Actor); 
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "OpenSwitch")
 	void CloseDoor();
@@ -76,10 +94,13 @@ public:
 	void LowerFloorSwitch();
 
 	UFUNCTION(BlueprintCallable, Category = "OpenSwitch")
-	void UpdateDoor01Location(FVector DoorDirection); 
+	void UpdateDoorLocation(FVector DoorDirection); 
 
 	UFUNCTION(BlueprintCallable, Category = "OpenSwitch")
 	void UpdateFloorSwitchLocation(float Value);
+
+	UFUNCTION(BlueprintCallable, Category = "OpenSwitch")
+	void UpdateParticleSystemLocation(FVector ParticleDirection);
 
 	// UFUNCTION(BlueprintCallable, Category = "OpenSwitch")
 	// void UpdateDoor02Location(float Z);

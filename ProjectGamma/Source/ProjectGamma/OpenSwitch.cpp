@@ -4,6 +4,8 @@
 #include "OpenSwitch.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Particles/ParticleSystem.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AOpenSwitch::AOpenSwitch()
@@ -39,8 +41,16 @@ AOpenSwitch::AOpenSwitch()
 	DoorMesh02 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh02"));
 	DoorMesh02->SetupAttachment(GetRootComponent());
 
+	ParticleSystem01 = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("DoorParticle01"));
+	ParticleSystem01->SetupAttachment(GetRootComponent());
+
+	ParticleSystem02 = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("DoorParticle02"));
+	ParticleSystem02->SetupAttachment(GetRootComponent());
+
 	bIsDoorMesh02Set = false; 
 	bIsFloorSwitchMeshSet = false; 
+	bAreParticlesSet = false; 
+	bDoorUnlocked = false; 
 }
 
 // Called when the game starts or when spawned
@@ -51,9 +61,18 @@ void AOpenSwitch::BeginPlay()
 	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &AOpenSwitch::OnOverlapBegin);
 	TriggerBox->OnComponentEndOverlap.AddDynamic(this, &AOpenSwitch::OnOverlapEnd);
 
-	InitialDoor01Location = DoorMesh01->GetComponentLocation();
-	InitialDoor02Location = DoorMesh02->GetComponentLocation();
+	//InitialDoor01Location = DoorMesh01->GetComponentLocation();
+	InitialDoor01Location = DoorMesh01->GetRelativeLocation();
+	
+	//InitialDoor02Location = DoorMesh02->GetComponentLocation();
+	InitialDoor02Location = DoorMesh02->GetRelativeLocation();
+	
 	InitialSwitchLocation = FloorSwitch->GetComponentLocation(); 
+
+	InitialParticlSystem01Location = ParticleSystem01->GetRelativeLocation();
+	InitialParticlSystem02Location = ParticleSystem02->GetRelativeLocation();
+
+
 	
 }
 
@@ -67,28 +86,36 @@ void AOpenSwitch::Tick(float DeltaTime)
 void AOpenSwitch::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Overlap Begin."));
-	OpenDoor();
-	LowerFloorSwitch();
+	OpenDoor(OtherActor);
+	if (bIsFloorSwitchMeshSet)
+	{
+		LowerFloorSwitch();
+	}
 }
 
 void AOpenSwitch::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Overlap End."));
 	CloseDoor(); 
-	RaiseFloorSwitch();
+	if (bIsFloorSwitchMeshSet)
+	{
+		RaiseFloorSwitch();
+	}
 }
 
-void AOpenSwitch::UpdateDoor01Location(FVector DoorDirection)
+void AOpenSwitch::UpdateDoorLocation(FVector DoorDirection)
 {
 	FVector NewDoor01Location = InitialDoor01Location;
 	NewDoor01Location += DoorDirection;
-	DoorMesh01->SetWorldLocation(NewDoor01Location); 
+	//DoorMesh01->SetWorldLocation(NewDoor01Location); 
+	DoorMesh01->SetRelativeLocation(NewDoor01Location);
 
 	if (bIsDoorMesh02Set)
 	{
 		FVector NewDoor02Location = InitialDoor02Location;
 		NewDoor02Location -= DoorDirection;
-		DoorMesh02->SetWorldLocation(NewDoor02Location);
+		//DoorMesh02->SetWorldLocation(NewDoor02Location);
+		DoorMesh02->SetRelativeLocation(NewDoor02Location);
 	}
 }
 
@@ -97,5 +124,16 @@ void AOpenSwitch::UpdateFloorSwitchLocation(float Value)
 	FVector NewFloorSwitchLocation = InitialSwitchLocation;
 	NewFloorSwitchLocation.Z += Value;
 	FloorSwitch->SetWorldLocation(NewFloorSwitchLocation);
+}
+
+void AOpenSwitch::UpdateParticleSystemLocation(FVector ParticleDirection)
+{
+	FVector NewParticle01Location = InitialParticlSystem01Location;
+	FVector NewParticle02Location = InitialParticlSystem02Location;
 	
+	NewParticle01Location += ParticleDirection;
+	NewParticle02Location -= ParticleDirection;
+
+	ParticleSystem01->SetRelativeLocation(NewParticle01Location);
+	ParticleSystem02->SetRelativeLocation(NewParticle02Location);
 }
