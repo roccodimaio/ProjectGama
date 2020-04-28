@@ -6,6 +6,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "TimerManager.h"
+
 
 // Sets default values
 AOpenSwitch::AOpenSwitch()
@@ -51,7 +53,13 @@ AOpenSwitch::AOpenSwitch()
 	bIsFloorSwitchMeshSet = false; 
 	bAreParticlesSet = false; 
 	bDoorUnlocked = false; 
+	bParticlesRunParallel = false; 
+	bCharacterOnSwitch = false; 
+
+	ResetDoorTime = 2.0f; 
 }
+
+
 
 // Called when the game starts or when spawned
 void AOpenSwitch::BeginPlay()
@@ -86,6 +94,8 @@ void AOpenSwitch::Tick(float DeltaTime)
 void AOpenSwitch::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Overlap Begin."));
+	if (!bCharacterOnSwitch) bCharacterOnSwitch = true; 
+
 	OpenDoor(OtherActor);
 	if (bIsFloorSwitchMeshSet)
 	{
@@ -96,11 +106,10 @@ void AOpenSwitch::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 void AOpenSwitch::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Overlap End."));
-	CloseDoor(); 
-	if (bIsFloorSwitchMeshSet)
-	{
-		RaiseFloorSwitch();
-	}
+	if (bCharacterOnSwitch) bCharacterOnSwitch = false; 
+
+	// Set a timer to run ResetDoor after ResetDoorTime runs out (default = 2.0f)
+	GetWorldTimerManager().SetTimer(SwitchHandle, this, &AOpenSwitch::ResetDoor, ResetDoorTime);
 }
 
 void AOpenSwitch::UpdateDoorLocation(FVector DoorDirection)
@@ -132,8 +141,32 @@ void AOpenSwitch::UpdateParticleSystemLocation(FVector ParticleDirection)
 	FVector NewParticle02Location = InitialParticlSystem02Location;
 	
 	NewParticle01Location += ParticleDirection;
-	NewParticle02Location -= ParticleDirection;
+
+	// If particles run parallel then move in same direction, if not move in opposite direction
+	if (bParticlesRunParallel)
+	{
+		NewParticle02Location += ParticleDirection;
+	}
+	else
+	{
+		NewParticle02Location -= ParticleDirection;
+	}
+	
 
 	ParticleSystem01->SetRelativeLocation(NewParticle01Location);
 	ParticleSystem02->SetRelativeLocation(NewParticle02Location);
+}
+
+void AOpenSwitch::ResetDoor()
+{
+	if (!bCharacterOnSwitch)
+	{
+		CloseDoor();
+		if (bIsFloorSwitchMeshSet)
+		{
+			RaiseFloorSwitch();
+		}
+	}
+
+	
 }
