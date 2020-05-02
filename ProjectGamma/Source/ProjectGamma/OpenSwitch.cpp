@@ -56,7 +56,7 @@ AOpenSwitch::AOpenSwitch()
 	bParticlesRunParallel = false; 
 	bCharacterOnSwitch = false; 
 
-	ResetDoorTime = 2.0f; 
+	ResetDoorTime = 3.0f; 
 }
 
 

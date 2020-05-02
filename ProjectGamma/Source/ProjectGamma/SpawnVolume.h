@@ -34,4 +34,7 @@ public:
 	/** Random point(vector) within the SpawningBox to spawn */
 	UFUNCTION(BlueprintPure, Category = "Spawning")
 	FVector GetSpawnPoint();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Spawning")
+	void SpawnOurPawn(UClass* ToSpawn, const FVector& Location);
 };

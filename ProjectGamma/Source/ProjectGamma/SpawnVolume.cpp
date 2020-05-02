@@ -4,6 +4,8 @@
 #include "SpawnVolume.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Engine/World.h"
+#include "BasicEnemy.h"
 
 // Sets default values
 ASpawnVolume::ASpawnVolume()
@@ -38,4 +40,21 @@ FVector ASpawnVolume::GetSpawnPoint()
 
 	return Point;
 }
+
+void ASpawnVolume::SpawnOurPawn_Implementation(UClass* ToSpawn, const FVector& Location)
+{
+	if (ToSpawn)
+	{
+		UWorld* World = GetWorld(); 
+		FActorSpawnParameters SpawnParms; 
+
+
+		if (World)
+		{
+			ABasicEnemy*  EnemySpawned = World->SpawnActor<ABasicEnemy>(ToSpawn, Location, FRotator(0.0f), SpawnParms);
+		}
+	}
+}
+
+
 

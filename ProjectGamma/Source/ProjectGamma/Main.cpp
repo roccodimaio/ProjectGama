@@ -50,6 +50,31 @@ AMain::AMain()
 	GetCharacterMovement()->AirControl = 0.2f; // Control over character when in the air (1.0 = full control)
 
 
+	//*****************************************************************************************************************************************/
+	// Player Stats
+	Health = 250.0f;
+	MaxHealth = 300.0f;
+	Mana = 250.0f;
+	MaxMana = 300.0f;
+	Stamina = 100.0f;
+	MaxStamina = 150.0f;
+	MeleeStrenth = 10;
+	MaxMeleeStrength = 99;
+	RangeStrength = 10;
+	MaxRangeStrength = 99;
+	Intelligence  = 10;
+	MaxIntelligence = 99;
+	Defense = 15;
+	MaxDefense = 99;
+	ManaGateLevel = 1;
+	MaxManaGateLevel = 5;
+	Lars = 0;
+	Level = 1;
+	MaxLevel = 40;
+	ExperienceToNextLevel = 100.0f;
+	CurrentExperience = 25.0f;
+
+	//*****************************************************************************************************************************************/
 
 }
 

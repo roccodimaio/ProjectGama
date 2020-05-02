@@ -36,6 +36,81 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	float BaseLookUpRate;
 
+	/**
+	/*
+	/* PLayer Stats
+	/*
+	*/
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerStats")
+	float Health;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "PlayerStats")
+	float MaxHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerStats")
+	float Mana;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "PlayerStats")
+	float MaxMana;
+
+	// Used to determine Sprinting duration
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerStats")
+	float Stamina;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "PlayerStats")
+	float MaxStamina;
+
+	// Used to determine strength of melee attack
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerStats")
+	int32 MeleeStrenth; 
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "PlayerStats")
+	int32 MaxMeleeStrength;
+
+	// Used to determine strength of range attacks
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerStats")
+	int32 RangeStrength; 
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "PlayerStats")
+	int32 MaxRangeStrength;
+
+	// Used to determine strength of mana attacks
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerStats")
+	int32 Intelligence;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "PlayerStats")
+	int32 MaxIntelligence; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerStats")
+	int32 Defense; 
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "PlayerStats")
+	int32 MaxDefense; 
+	
+	// Used to determine level of mana attacks
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerStats")
+	int32 ManaGateLevel;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "PlayerStats")
+	int32 MaxManaGateLevel; 
+
+	// Currency 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerStats")
+	int32 Lars; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerStats")
+	int32 Level;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "PlayerStats")
+	int32 MaxLevel; 
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "PlayerStats")
+	float ExperienceToNextLevel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerStats")
+	float CurrentExperience; 
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
