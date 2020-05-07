@@ -3,6 +3,7 @@
 
 #include "MainAnimInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Main.h"
 
 
 void UMainAnimInstance::NativeInitializeAnimation()
@@ -10,6 +11,10 @@ void UMainAnimInstance::NativeInitializeAnimation()
 	if (Pawn == nullptr)
 	{
 		Pawn = TryGetPawnOwner(); // Check what Pawn owns this AnimInstance and assign to Pawn
+		if (Pawn)
+		{
+			Main = Cast<AMain>(Pawn);
+		}
 	}
 }
 
@@ -28,5 +33,10 @@ void UMainAnimInstance::UpdateAnimationProperties()
 		MovementSpeed = LateralSpeed.Size(); // Assigned the magnitude of LateralSpeed to MovementSpeed which is a float
 
 		bIsInAir = Pawn->GetMovementComponent()->IsFalling();
+
+		if (Main == nullptr)
+		{
+			Main = Cast<AMain>(Pawn);
+		}
 	}
 }
